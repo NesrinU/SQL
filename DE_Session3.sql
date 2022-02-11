@@ -187,6 +187,7 @@ ve müşteri sayısına göre AZALAN şekilde sıralayarak listeleyen sorguyu ya
  marka_id'si ayni olan kayıtların marka_id, marka_adi, siparis_adedi ve siparis_tarihi   
  bilgilerini  listeleyen bir sorgu yaziniz.*/
 select * from siparisler;
+select * from markalar;
 
 SELECT  siparisler.marka_id, markalar.marka_adi, siparisler.siparis_adedi,siparisler.siparis_tarihi
 FROM siparisler
@@ -212,29 +213,65 @@ JOIN  siparisler  ON siparisler.marka_id = markalar.marka_id;
 
 SELECT  siparisler.marka_id, markalar.marka_adi, siparisler.siparis_adedi,siparisler.siparis_tarihi
 FROM markalar
-LEFT JOIN  siparisler  ON siparisler.marka_id = markalar.marka_id;  --7 satir
+LEFT JOIN  siparisler  ON siparisler.marka_id = markalar.marka_id; 
+ --7 satir
 
 
 
 /* Chinook veritabanındaki tracks tablosunda bulunan her bir şarkının türü (genre)
 listeleyiniz.*/
-SELECT  Name, GenreId
-FROM tracks;
+SELECT genres.Name as genre_type,tracks.Name
+FROM tracks
+JOIN genres
+on tracks.GenreId = genres.GenreId;
+
+SELECT g.Name as genre_type,t.Name
+FROM tracks t
+JOIN genres g
+on t.GenreId = g.GenreId;
+
+select * from tracks;
+select * from genres ;
 
 
 
  /* invoice tablosundaki faturaların her birinin müşteri adını (FirstName),
  soyadını (lastName), fatura tarihi (InvoiceDate) ve fatura meblağını (total) 
  listeleyen sorguyu yazınız */
+ select * from invoices;
+ select * from customers;
+ 
  SELECT customers.Firstname, customers.LastName, invoices.InvoiceDate, 
  invoices.Total
  FROM invoices
- JOIN customers on customers.CustomerId = invoices.CustomerId;
+ JOIN customers 
+ on customers.CustomerId = invoices.CustomerId;
+ 
+ 
+ SELECT customers.Firstname, customers.LastName, invoices.InvoiceDate, 
+ invoices.Total
+ FROM invoices
+ LEFT JOIN customers 
+ on customers.CustomerId = invoices.CustomerId;
 
  
  
-/* artists tablosunda bulunan her bir kişinin albums tablosunda bulunan tüm albümlerinin
+/* artists tablosunda bulunan kişilerin albums tablosunda bulunan albümlerinin
 listeleyen sorguyu yazınız. Sorguda ArtistId, Name, Title ve AlbumId olmalıdır*/
+select * from artists;
+select * from albums;
+
 SELECT artists.ArtistId, artists.Name, albums.Title, albums.AlbumId
 FROM artists
 JOIN albums on artists.ArtistId = albums.ArtistId;
+
+/* artists tablosunda bulunan tüm kişilerin albums tablosunda bulunan albümlerini
+listeleyen sorguyu yazınız. Sorguda ArtistId, Name, Title ve AlbumId olmalıdır*/
+
+SELECT artists.ArtistId, artists.Name, albums.Title, albums.AlbumId
+FROM artists
+LEFT JOIN albums on artists.ArtistId = albums.ArtistId;
+
+SELECT artists.ArtistId, artists.Name, albums.Title, albums.AlbumId
+FROM albums
+LEFT JOIN artists on artists.ArtistId = albums.ArtistId;
