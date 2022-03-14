@@ -1,0 +1,102 @@
+USE TeachSQL;
+GO
+
+SELECT * FROM ang;
+SELECT * FROM abt;
+
+INSERT INTO ang 
+VALUES ('otto',2);
+
+INSERT INTO ang
+VALUES('Karl');
+--besser
+INSERT INTO ang(name)
+VALUES('Karl');
+
+INSERT INTO abt 
+VALUES(66,'Keller');
+
+INSERT INTO abt 
+VALUES('Hof');
+
+INSERT INTO abt(abtnr)
+VALUES (66);
+
+INSERT INTO abt(abtname,abtnr)
+VALUES ('Speicher',99);
+SELECT * FROM abt;
+
+INSERT INTO abt 
+SELECT abt_nr, abt_name FROM pro_angSQL.dbo.abt;
+
+DELETE FROM ang;
+
+SELECT * FROM ang;
+
+INSERT INTO ang
+SELECT a_nr,name,abt_nr FROM pro_angSQL.dbo.ang;
+--geht nicht wegen IDENTITY
+
+SET IDENTITY_INSERT ang ON;
+
+INSERT INTO ang(angnr, name, abtnr)
+SELECT a_nr,name,abt_nr FROM pro_angSQL.dbo.ang;
+
+SET IDENTITY_INSERT ang OFF;
+
+SELECT * INTO artikel
+FROM NordwindSQL.dbo.Artikel;
+DELETE FROM Artikel;
+
+INSERT INTO artikel
+	OUTPUT INSERTED.*
+SELECT * FROM NordwindSQL.dbo.artikel;
+
+SELECT * FROM ang;
+
+DELETE FROM ang
+WHERE angnr < 200;
+
+DELETE FROM ang;
+
+INSERT INTO ang 
+VALUES('otto',NULL);
+
+SELECT * FROM ang;
+
+TRUNCATE TABLE ang;
+
+INSERT INTO ang 
+VALUES('otto',NULL);
+
+INSERT INTO ang 
+VALUES('Fritz',NULL);
+
+DELETE FROM ang
+	OUTPUT DELETED.*
+WHERE angnr <2;
+
+SELECT * INTO angKopie
+FROM ang
+WHERE 1=2;
+
+SELECT * FROM ang;
+
+DELETE FROM ang
+	OUTPUT deleted.* INTO angkopie;
+
+SELECT * FROM angkopie;
+
+UPDATE angkopie
+	SET abtnr = 666 ;
+
+SELECT * FROM angKopie;
+
+UPDATE angkopie	
+	SET abtnr = 999
+WHERE angnr=3;
+
+UPDATE angkopie
+	SET abtnr = 777
+	OUTPUT INSERTED.*,deleted.*;
+

@@ -1,0 +1,48 @@
+--1.1
+SELECT * FROM ang;
+CREATE VIEW vwAng AS SELECT a_nr, name, beruf, abt_nr, vorg FROM ang;
+SELECT * FROM vwAng;
+--1.3
+DROP VIEW vwAng1;
+CREATE VIEW vwAng1 AS SELECT * FROM ang WHERE abt_nr = 1 WITH CHECK OPTION;
+CREATE VIEW vwAng2 AS SELECT * FROM ang WHERE abt_nr = 2 WITH CHECK OPTION;
+CREATE VIEW vwAng3 AS SELECT * FROM ang WHERE abt_nr = 3 WITH CHECK OPTION;
+--1.4
+SELECT * FROM vwAng1 WHERE name LIKE '[a-k]%' 
+UNION
+SELECT * FROM vwAng2 WHERE name LIKE '[a-k]%' 
+UNION
+SELECT * FROM vwAng3 WHERE name LIKE '[a-k]%';
+--1.5
+CREATE VIEW vwAngPRoj AS 
+SELECT Name, p_beschr AS Projekt FROM pro_ang
+INNER JOIN ang
+ON pro_ang.a_nr = ang.a_nr
+INNER JOIN pro
+ON pro_ang.p_nr = pro.p_nr;
+--1.6
+CREATE VIEW vwAngLeiter AS 
+SELECT abt.abt_name AS Abteilung, ang.name AS Leiter FROM abt 
+INNER JOIN ang
+ON abt.abt_leiter = ang.a_nr
+where ang.a_nr = abt.abt_leiter;
+
+-----------------------
+USE nordwindsql;
+--2.1
+CREATE VIEW vwdtKunden AS
+SELECT * FROM kunden WHERE land = 'Deutschland';
+--2.3
+ALTER VIEW vwdtKunden AS
+SELECT * FROM kunden WHERE land = 'Deutschland' WITH CHECK OPTION;
+--2.4
+SELECT OBJECT_DEFINITION(OBJECT_ID('vwdtKunden'));
+EXEC sp_helptext 'vwdtKunden';
+CREATE VIEW vwARTAUSLAUF WITH ENCRYPTION AS 
+--2.5
+SELECT * FROM artikel WHERE auslaufartikel = 1;
+--2.6
+SELECT *  INTO billigartikel FROM artikel WHERE einzelpreis < 12;
+--2.7
+CREATE VIEW  vwLief11 WITH SCHEMABINDING AS 
+SELECT artikelname, Einzelpreis FROM dbo.billigartikel WHERE [Lieferanten-NR] = 11;

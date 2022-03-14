@@ -1,0 +1,130 @@
+-- Beispiele Datentypen und Funktionen
+
+-- CAST
+SELECT CAST('1234' AS INT);
+SELECT CAST('hallo' AS INT);
+SELECT CAST(3.94 AS INT);
+
+DECLARE @zahl INT = 42
+
+
+USE Northwind;
+GO
+
+SELECT *
+FROM Products;
+
+SELECT * FROM Products
+WHERE ProductName = 'chai';
+
+
+SELECT * FROM Products
+WHERE ProductName = 'chai'
+COLLATE Latin1_General_CS_AS;
+
+SELECT * FROM Products
+WHERE ProductName = 'chai'
+COLLATE Latin1_General_CI_AS;
+
+
+SELECT * FROM fn_helpcollations();
+
+-- Verknüpfungen
+
+SELECT 'Guten ' + 'Morgen!';
+SELECT 'Guten ' + NULL;
+
+-- alle Verknüpfungen mit NULL ergeben NULL !!
+
+-- CONCAT
+SELECT CONCAT('Guten ', 'Morgen', '!');
+SELECT CONCAT('Guten', NULL);
+
+SELECT City + ', Region: ' + Region
+FROM Employees;
+
+SELECT CONCAT(City, ', Region: ' + Region) Herkunft
+FROM Employees;
+
+
+SELECT SUBSTRING('Guten Morgen!', 7, 6);
+SELECT SUBSTRING(City, 3, 2)
+FROM Employees;
+
+SELECT SUBSTRING(REVERSE('Guten Morgen!'), 7, 6);
+
+
+SELECT LEFT('Ronaldo', 2);
+SELECT RIGHT('Ronaldo', 2);
+
+
+SELECT LEN('Ronaldo');
+SELECT DATALENGTH('Ronaldo');
+SELECT DATALENGTH(N'Ronaldo');
+SELECT LEN(N'Ronaldo');
+
+
+-- Index
+SELECT CHARINDEX('al', 'Ronaldo');
+
+
+-- Replace
+SELECT REPLACE('Ronaldo', 'n','rsh');
+
+SELECT UPPER('Ronaldo');
+SELECT LOWER('Ronaldo');
+SELECT UPPER('ßßß');
+
+
+-- Datumsfunktionen
+SELECT GETDATE();
+SELECT GETUTCDATE();
+
+SELECT YEAR(GETDATE());
+SELECT MONTH(GETDATE());
+SELECT DAY(GETDATE());
+
+SELECT CAST(GETDATE() AS DATE);
+SELECT CAST(GETDATE() AS NCHAR(10));
+
+SELECT DATENAME(MONTH, GETDATE());
+SELECT DATENAME(WEEKDAY, GETDATE());
+SELECT DATENAME(MM, GETDATE());
+SELECT DATENAME(DW, GETDATE());
+
+SELECT DATEPART(MONTH, GETDATE());
+SELECT DATEPART(HH, GETDATE());
+SELECT DATEPART(MI, GETDATE());
+
+
+SELECT DATEDIFF(DAY, '25.07.1989', GETDATE());
+SELECT ABS(DATEDIFF(DAY, GETDATE(), '25.07.1989'));
+
+
+
+SELECT DATEADD(DAY, 112, GETDATE());
+
+SELECT ISDATE('12q.523.4547.2');
+SELECT ISDATE(GETDATE());
+
+SELECT POWER(2, 10);
+
+SELECT SQRT(625);
+
+SELECT ASCII('D');
+SELECT CHAR(68);
+
+SELECT REPLICATE('Hallo ', 100);
+
+
+SELECT CONVERT(VARCHAR(20), GETDATE()) AS Standard;
+SELECT CONVERT(VARCHAR(20), GETDATE(), 100) AS Standard;
+SELECT CONVERT(VARCHAR(20), GETDATE(), 101) AS USA;
+SELECT CONVERT(VARCHAR(20), GETDATE(), 104) AS Deutsch;
+SELECT CONVERT(VARCHAR(20), GETDATE(), 112) AS Ansi;
+
+SELECT PARSE('03.07.1978' AS DATETIME2);
+SELECT PARSE('Monday, 03 July 1978' AS DATETIME2);
+
+
+

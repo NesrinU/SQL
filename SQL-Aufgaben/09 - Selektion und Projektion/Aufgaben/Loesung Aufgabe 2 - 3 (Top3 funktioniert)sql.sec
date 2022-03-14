@@ -1,0 +1,87 @@
+-- Aufgabe 2
+
+-- WAWI-Datenbank
+USE WAWI_BASIS;
+
+-- a)
+SELECT * FROM tblArtikel;
+
+-- b)
+SELECT a.ArtBezeichnung, a.ArtGruppe, a.ArtLief
+FROM tblArtikel a;
+
+-- c)
+SELECT a.ArtBezeichnung, a.ArtVKPreis, a.ArtLieferzeit
+FROM tblArtikel a;
+
+-- d)
+SELECT a.ArtBezeichnung Bezeichnung,
+		 a.ArtVKPreis VKPreis , 
+		 a.ArtLieferzeit Lieferzeit
+FROM tblArtikel a;
+
+-- Aufgabe 3
+
+-- a)
+SELECT a.ArtBezeichnung, a.ArtEKPreis, a.ArtVKPreis,
+		ArtVKPreis - ArtEKPreis Differenz
+FROM tblArtikel a;
+
+-- b)
+SELECT a.ArtBezeichnung, a.ArtEKPreis,
+		a.ArtVKPreis, a.ArtMengeBestellt,
+		a.ArtVKPreis * a.ArtMengeBestellt Wert
+FROM tblArtikel a;
+
+-- c)
+SELECT a.ArtBezeichnung, a.ArtEKPreis,
+		a.ArtVKPreis,
+		a.ArtEKPreis * a.ArtUSt / 100 Umsatzsteuer
+FROM tblArtikel a;
+
+-- d)
+SELECT a.ArtBezeichnung, a.ArtEKPreis,
+		a.ArtVKPreis,
+		a.ArtEKPreis * 1.4 [VK 40 % Aufschlag]
+FROM tblArtikel a;
+
+-- e)
+SELECT TOP 3 a.ArtBezeichnung, a.ArtEKPreis,
+		a.ArtVKPreis,
+		a.ArtVKPreis - ArtEKPreis Unterschied
+FROM tblArtikel a
+ORDER BY Unterschied DESC;
+
+-- f)
+SELECT TOP 3 (ArtVKPreis / NULLIF(ArtEKPreis, 0)) * 100 AS Prozentualgewinn, a.ArtNr,a.ArtBezeichnung 
+FROM tblArtikel a
+ORDER BY Prozentualgewinn DESC;
+
+-- g)
+SELECT TOP 3 a.ArtBezeichnung, a.ArtVKPreis, a.ArtMengeBestellt
+FROM tblArtikel a
+ORDER BY a.ArtMengeBestellt DESC;
+
+-- h)
+SELECT a.ArtBezeichnung, a.ArtVKPreis, a.ArtMengeBestellt
+FROM tblArtikel a
+ORDER BY a.ArtMengeBestellt DESC
+OFFSET 9 ROWS FETCH NEXT 3 ROWS ONLY;
+
+-- i)
+SELECT a.ArtBezeichnung, a.ArtNr, 
+		a.ArtVKPreis, a.ArtNr / 7 Ergebnis
+FROM tblArtikel a
+WHERE a.ArtBezeichnung LIKE 'a%'
+AND a.ArtNr % 7 = 0
+ORDER BY a.ArtVKPreis DESC;
+
+-- j)
+SELECT a.ArtBezeichnung, a.ArtLieferzeit
+		, a.ArtNr, a.ArtMengeBestellt
+FROM tblArtikel a
+WHERE a.ArtBezeichnung LIKE '%[0-9]%'
+AND a.ArtLieferzeit < 3
+AND
+	(a.ArtNr / 2 < 550 
+	OR a.ArtMengeBestellt > 10);

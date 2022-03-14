@@ -1,0 +1,54 @@
+CREATE DATABASE Dings;
+GO
+
+USE Dings;
+GO
+
+
+CREATE TABLE DingsTab
+(
+	ID INT IDENTITY PRIMARY KEY,
+	[Text] NVARCHAR(MAX) DEFAULT 'kein Eintrag'
+);
+
+INSERT DingsTab
+VALUES
+('kjgasc'),
+('gssdhtjtj'),
+('dzdtzdz'),
+('zdtidzjk'),
+('s<d<ss'),
+('<sdd<g<dgfx'),
+('yfhdydfhydfhydfh');
+
+
+CREATE TABLE DingsTabKopie1
+(
+	Daten NVARCHAR(max)
+);
+
+INSERT DingsTabKopie1
+SELECT Text
+FROM DingsTab;
+
+SELECT * FROM DingsTabKopie1;
+
+
+SELECT * INTO DingsTabKopie2
+FROM DingsTab;
+
+SELECT * FROM DingsTabKopie2;
+
+
+INSERT INTO DingsTab(Text)
+VALUES (DEFAULT);
+
+
+INSERT INTO DingsTabKopie2
+VALUES (DEFAULT);
+
+SELECT * FROM DingsTab;
+SELECT * FROM DingsTabKopie2;
+
+
+

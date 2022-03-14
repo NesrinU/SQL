@@ -1,0 +1,17 @@
+-BackUp dosyalarindan Databaseleri SQL severa yükleyin.
+-Personal und WAWI_Basis Databaseleri malesef eksiktir. Backup yaparken hata veriyor.
+-Aufgabe lerde bu database istemeyenleri yapabilirsiniz.
+-Sirasi ile klasörler icinde Aufgabeler (PDF yada Word Dosyasi olarak) ve cogunlukla cözümleri bulunmaktadir. 
+Cözüm olmayanlar muhtemelen basit oldugu icin cözümü verilmemis olabilir, Lösung olarak benim cözdüklerimi kullanabilirsiniz.
+-Bazi Aufgabelerde ek olarak Database kurulmasi isteniyor. Klasör icinde onun icin de Skriptler yada yönergeler bulunmaktadir.
+
+yada
+
+asagida verdigim linkten sanal bilgisayar kurulumunu indirip icindeki SQL server i databaseler eksiksiz hazir 
+yuklenmis halde kullanabilirsiniz.(ca. 7 GB) Eger dosya acilmazsa "7z zip programi" ile zip dosyasini disa cikarabilirsiniz. 
+Icindeki SQLClient dosyasini cift tiklayinca kurulum yapiliyor.
+Bu VM i kopyaladim secenegi sorulacak. Kopyaladim secenegini secip devam edin.
+
+Kullanici sifresi: P@ssw0rd
+
+https://drive.google.com/file/d/1tQsAkUNDkBU1lIjkAlgGW_ZAr1JmYKn2/view?usp=sharing_eip_dm&ts=621fd19f

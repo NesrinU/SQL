@@ -1,0 +1,104 @@
+USE TeachSQL;
+GO
+
+SELECT a_nr, name, abt_nr INTO ang 
+FROM pro_angSQL.dbo.ang;
+
+
+SELECT * FROM ang;
+
+SELECT * INTO angDW
+FROM ang
+WHERE 1=2;
+
+SELECT * FROM angdw;
+--Erstbefüllung
+MERGE INTO angdw AS ziel
+USING ang AS quelle
+ON (ziel.a_nr = quelle.a_nr)
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (a_nr,name,abt_nr)
+		VALUES (quelle.a_nr,quelle.name,quelle.abt_nr);
+
+SELECT * FROM angDW;
+--Datensatz in Quelle hinzufügen
+INSERT INTO ang
+VALUES(555,'Karl Heinz',3);
+SELECT * FROM ang;
+
+--neue Datensätze hinzufügen
+MERGE INTO angdw AS ziel
+USING ang AS quelle
+ON (ziel.a_nr = quelle.a_nr)
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (a_nr,name,abt_nr)
+		VALUES (quelle.a_nr,quelle.name,quelle.abt_nr);
+
+--Datensatz in Quelle hinzufügen und anderen ändern
+INSERT INTO ang
+VALUES (123,'Maria',3);
+
+UPDATE ang	SET abt_nr = 2
+WHERE a_nr = 555;
+
+SELECT * FROM ang;
+SELECT * FROM angDW;
+
+--neue zu quelle hinzufügen UND alte ändern
+MERGE INTO angdw AS ziel
+USING ang AS quelle
+ON (ziel.a_nr = quelle.a_nr)
+WHEN MATCHED 
+	THEN UPDATE
+		SET ziel.name=quelle.name,
+			ziel.abt_nr = quelle.abt_nr
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (a_nr,name,abt_nr)
+		VALUES (quelle.a_nr,quelle.name,quelle.abt_nr);
+
+SELECT * FROM ang;
+SELECT * FROM angDW;
+
+--Datensatz in quelle entfernen
+--neue zu quelle hinzufügen UND alte ändern
+INSERT INTO ang
+VALUES (777,'Antonia',2);
+
+UPDATE ang	SET name = 'Karlotto'
+WHERE a_nr = 555;
+
+DELETE FROM ang WHERE name='Maria';
+
+--Komfort-Variant
+SET NOCOUNT ON;
+
+MERGE INTO angdw AS ziel
+USING ang AS quelle
+ON (ziel.a_nr = quelle.a_nr)
+WHEN MATCHED 
+	THEN UPDATE
+		SET ziel.name=quelle.name,
+			ziel.abt_nr = quelle.abt_nr
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (a_nr,name,abt_nr)
+		VALUES (quelle.a_nr,quelle.name,quelle.abt_nr)
+WHEN NOT MATCHED BY Source
+	THEN DELETE;
+
+SELECT * FROM ang;
+SELECT * FROM angDW;
+	
+--optimiert
+SET NOCOUNT OFF
+MERGE INTO angdw AS ziel
+USING ang AS quelle
+ON (ziel.a_nr = quelle.a_nr)
+WHEN MATCHED AND ziel.name <> quelle.name OR ziel.abt_nr<>quelle.abt_nr
+	THEN UPDATE
+		SET ziel.name=quelle.name,
+			ziel.abt_nr = quelle.abt_nr
+WHEN NOT MATCHED BY TARGET
+	THEN INSERT (a_nr,name,abt_nr)
+		VALUES (quelle.a_nr,quelle.name,quelle.abt_nr)
+WHEN NOT MATCHED BY Source
+	THEN DELETE;

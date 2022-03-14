@@ -1,0 +1,77 @@
+﻿--Lösungen Einführung SICHTEN
+
+use master
+drop database pro_angsql
+
+use pro_angSQL
+--a
+CREATE VIEW vwAng1 AS
+select ang.a_nr as Nummer, ang.name as Name, ang.gehalt as Gehalt, 
+v.name as VorgName, v.gehalt as VorgGehalt from ang 
+left outer join 
+ang as v 
+on ang.vorg = v.a_nr
+--b
+CREATE VIEW vwAng2 AS
+select * from vwAng1
+where vwAng1.nummer not in (select a_nr from pro_ang)
+
+--c
+ALTER VIEW vwAng2 AS
+select * from vwAng1
+where vwAng1.nummer not in (select a_nr from pro_ang)
+and vwAng1.gehalt < 6500
+--d
+select * from vwAng1 except (select * from vwAng2)
+select * into vwTest from 
+(select * from vwAng1 except (select * from vwAng2)) as t
+--e
+select count(*) from vwAng1 where Gehalt > VorgGehalt
+--f
+ALTER VIEW vwAng1 AS
+select ang.a_nr as Nummer, ang.name as Name, ang.abt_nr AS Abteilung, 
+ang.gehalt as Gehalt, v.name as VorgName, v.gehalt as VorgGehalt from ang 
+left outer join 
+ang as v 
+on ang.vorg = v.a_nr
+--g
+EXEC sp_helptext 'vwang2';
+SELECT OBJECT_DEFINITION(OBJECT_ID('vwang2'));
+--h
+drop view vwAng1
+--i
+select sum(gehalt) from vwang1
+select * from vwang2
+--j
+update vwAng2 set gehalt = gehalt + 2000
+update vwAng2 set gehalt = gehalt - 2000
+-- 5 Änderungen, kein Check
+--k
+ALTER VIEW vwAng2 AS
+select * from vwAng1
+where vwAng1.nummer not in (select a_nr from pro_ang)
+and vwAng1.gehalt < 6500 WITH CHECK OPTION 
+--l
+update vwAng2 set gehalt = gehalt + 2000
+update vwAng2 set gehalt = gehalt - 2000
+-- 2 Änderungen, da Check
+--m
+begin tran
+alter table ang drop column name
+select * from ang
+rollback
+select  *from ang
+--n
+ALTER VIEW vwAng1 with schemabinding AS
+select ang.a_nr as Nummer, ang.name as Name, ang.abt_nr AS Abteilung, 
+ang.gehalt as Gehalt, v.name as VorgName, v.gehalt as VorgGehalt from dbo.ang 
+left outer join 
+dbo.ang as v 
+on ang.vorg = v.a_nr
+
+ALTER VIEW vwAng2 with schemabinding AS
+(select Nummer, Name, Gehalt, VorgName, VorgGehalt from dbo.vwAng1
+where vwAng1.nummer not in (select a_nr from dbo.pro_ang)
+and vwAng1.gehalt < 7500 )
+--o
+alter table ang drop column name -- Fehler

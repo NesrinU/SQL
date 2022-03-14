@@ -1,0 +1,20 @@
+SELECT * FROM Pers;SELECT * FROM Kfz;
+SELECT Kennzeichen, DATEDIFF(DAY, GETDATE(), HU) AS 'Tage bi HU' FROM Kfz; 
+SELECT DATEDIFF(DAY, GETDATE(), MIN(HU)) AS [Tage bis HU] FROM Kfz WHERE HU > GETDATE();
+SELECT COUNT(Kfz) AS 'Anzahl Fahrer' FROM Pers;
+SELECT COUNT(*) AS 'Hergestellt vor 2018' FROM Kfz WHERE Baujahr < 2018;
+SELECT Modell FROM Kfz WHERE LEFT(Modell,1) != 'A';
+SELECT Kennzeichen, DATEFROMPARTS(Baujahr, 7,15) AS Erstzulassung FROM Kfz;
+SELECT COUNT(*) AS [HU Folgejahr] FROM Kfz WHERE YEAR(GETDATE())+1 = YEAR(HU);
+WITH test (MM) AS (SELECT DISTINCT Marke + Modell FROM Kfz GROUP BY (Marke + Modell)) 
+SELECT COUNT(*) FROM test;
+SELECT COUNT(DISTINCT (Marke + Modell)) AS Anzahl FROM Kfz;
+SELECT  Marke + ' ' + Modell AS Kombi, COUNT(Marke + ' '+ Modell) AS 'Anzahl Kombi' FROM Kfz GROUP BY Marke + ' ' + Modell ASC;
+SELECT COUNT(*) AS 'Nicht Duisburger' FROM Kfz WHERE LEFT(Kennzeichen, 2) != 'DU';
+SELECT Baujahr, COUNT(*) AS Anzahl FROM Kfz GROUP BY Baujahr;
+SELECT Vorname + ' ' + Nachname AS Name FROM Pers WHERE PLZ != REVERSE(PLZ);
+SELECT TOP 1  Baujahr FROM Kfz WHERE Marke = 'Audi' ORDER BY Baujahr;
+SELECT Kennzeichen, HU FROM Kfz WHERE DATEFROMPARTS(YEAR(DATEADD(MONTH, 1, GETDATE())), MONTH(DATEADD(MONTH, 1, GETDATE())), DAY(HU)) = HU;
+SELECT Marke, COUNT(Marke) AS Anzahl, AVG(gefahreneKM) AS [ø Km] FROM Kfz GROUP BY Marke;
+SELECT LEFT(Kennzeichen,CHARINDEX(' ',Kennzeichen)) AS Kreis, COUNT(LEFT(Kennzeichen,CHARINDEX(' ',Kennzeichen))) AS Anzahl FROM Kfz GROUP BY LEFT(Kennzeichen,CHARINDEX(' ',Kennzeichen));
+SELECT YEAR(HU) AS [Jahr HU], COUNT(*) AS Anzahl FROM Kfz GROUP BY YEAR(HU);

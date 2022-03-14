@@ -1,0 +1,50 @@
+-- Aufgabe 2
+CREATE DATABASE "Neue Datenbank"
+
+ON PRIMARY
+
+	(
+	NAME = N'Freiwählbar',
+	FILENAME = N'E:\MDF\ND.mdf'
+	)
+LOG ON
+	(
+	NAME = N'Freiwählbar2',
+	FILENAME = N'G:\LDF\ND.ldf'
+	)
+
+;
+
+--Aufgabe 3
+CREATE DATABASE [Neue Datenbank 2]
+ON PRIMARY
+	(
+	NAME = N'ND2',
+	FILENAME = N'E:\MDF\ND2.mdf',
+	SIZE = 20 MB,
+	FILEGROWTH = 6 MB,
+	MAXSIZE = 50 MB
+	)
+LOG ON
+	(
+	NAME = N'ND2-Log',
+	FILENAME = N'G:\LDF\ND2-Log.ldf',
+	SIZE = 3 MB,
+	FILEGROWTH = 1 MB,
+	MAXSIZE = UNLIMITED
+	);
+
+--Aufgabe 4
+CREATE DATABASE [Neue Datenbank 3]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Neue Datenbank 3', FILENAME = N'E:\MDF\ND3.mdf' , SIZE = 10240KB , MAXSIZE = 51200KB , FILEGROWTH = 5120KB ), 
+ FILEGROUP [Tabelle1und2] 
+( NAME = N'ND3Tab1', FILENAME = N'F:\NDF1\ND3Tab1.ndf' , SIZE = 5120KB , FILEGROWTH = 1024KB ), 
+( NAME = N'ND3Tab2', FILENAME = N'G:\NDF2\ND3Tab2.ndf' , SIZE = 5120KB , FILEGROWTH = 1024KB ), 
+ FILEGROUP [Tabelle3und4] 
+( NAME = N'ND3Tab3', FILENAME = N'G:\NDF2\ND3Tab3.ndf' , SIZE = 5120KB , FILEGROWTH = 1024KB ), 
+( NAME = N'ND3Tab4', FILENAME = N'F:\NDF1\ND3Tab4.ndf' , SIZE = 5120KB , FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'Neue Datenbank 3_log', FILENAME = N'G:\LDF\ND3.ldf' , SIZE = 5120KB , FILEGROWTH = 20%)
+GO

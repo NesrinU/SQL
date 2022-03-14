@@ -1,0 +1,62 @@
+USE Northwind;
+
+
+SELECT o.OrderID, o.OrderDate,
+	od.UnitPrice, od.ProductID, od.Quantity
+FROM Orders AS o
+INNER JOIN [Order Details] AS od
+ON o.OrderID = od.OrderID;
+
+
+SELECT E1.FirstName, E1.LastName, E2.FirstName, E2.LastName
+FROM Employees AS E1
+JOIN Employees AS E2
+ON E1.ReportsTo = E2.EmployeeID;
+
+
+SELECT E1.FirstName, E1.LastName, E2.FirstName, E2.LastName
+FROM Employees AS E1
+LEFT OUTER JOIN Employees AS E2
+ON E1.ReportsTo = E2.EmployeeID;
+
+
+-- Tabellenausdruck
+SELECT orderyear, COUNT(DISTINCT CustomerID) AS CustomerCount
+FROM(
+		SELECT YEAR(OrderDate) AS orderyear, CustomerID
+		FROM Orders
+	) AS FROMTABELLE
+GROUP BY orderyear;
+
+--Tabellenausdruck
+SELECT orderyear, COUNT(DISTINCT CustomerID) AS CustomerCount
+FROM(
+		SELECT YEAR(OrderDate), CustomerID
+		FROM Orders
+	) AS FROMTABELLE(orderyear, CustomerID)
+GROUP BY orderyear;
+
+SELECT '123' AS 'Nur ein Select!';
+
+
+SELECT Orderyear, CustCnt
+FROM(
+		SELECT Orderyear, COUNT(DISTINCT CustID) AS CustCnt
+		FROM(
+				SELECT YEAR(OrderDate), CustomerID FROM Orders
+			) AS Tab1(Orderyear, CustID)
+		GROUP BY Orderyear) AS Tab2
+WHERE CustCnt >80;
+
+
+WITH CTE_Jahr
+AS	(
+		SELECT YEAR(OrderDate) AS orderyear, CustomerID
+		FROM Orders
+	)
+SELECT orderyear, COUNT(DISTINCT CustomerID) AS CustCnt
+FROM CTE_Jahr
+GROUP BY orderyear;
+
+
+

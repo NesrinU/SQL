@@ -1,0 +1,172 @@
+/* 
+Temporäre Tabellen
+1. Erstellen Sie die globale temporäre Tabelle:
+Projekt ThemaMitarbeiterzahl Start
+004 FiBu 7 1.6.2021
+009 KLR 4 5.8.2021
+018 KLR 2 1.9.2021
+012 Logistik 12 1.9.2021
+006 KLR 9 1.7.2021
+015 FiBu 2 1.12.2021
+*/
+
+ 
+
+  create table ##Temp1(
+    Projekt char(3) check (Projekt like '[0-9][0-9][0-9]') primary key,
+    Thema varchar(20),
+    Mitarbeiterzahl int,
+    Start date    
+    )
+    insert into ##Temp1 values('004', 'FiBu', 7 ,'1.6.2021')
+    insert into ##Temp1 values('009', 'KLR', 4 ,'5.8.2021')
+    insert into ##Temp1 values('018', 'KLR', 2,'1.9.2021')
+    insert into ##Temp1 values('012', 'Logistik', 12 ,'1.9.2021')
+    insert into ##Temp1 values('006', 'KLR', 9 ,'1.7.2021')
+    insert into ##Temp1 values('015', 'FiBu', 2 ,'1.12.2021')
+	
+    select * from ##Temp1
+
+/*
+2. Und folgende lokale temporäre Tabelle:
+ProjektNr Inhalt Teamgröße Beginn
+002 KLR 5 5.7.2021
+006 KLR 9 1.7.2021
+013 KLR 10 4.11.2021
+018 KLR 2 1.9.2021
+012 Logistik 12 1.9.2021
+003 KLR 5 1.7.2021
+011 KLR 13 1.8.2021
+007 FiBu 6 1.10.2021
+*/
+
+ 
+ drop table #temp2
+    create table #Temp2(
+    ProjektNr char(3) check (ProjektNr like '[0-9][0-9][0-9]') primary key,
+    Inhalt varchar(20),
+    Teamgröße int,
+    Beginn date    
+    )
+
+    insert into #Temp2 values('002', 'KLR', 5 ,'5.7.2021')
+    insert into #Temp2 values('006', 'KLR', 9 ,'1.7.2021')
+    insert into #Temp2 values('013', 'KLR', 10,'4.11.2021')
+    insert into #Temp2 values('018', 'KLR', 2,'1.9.2021')
+    insert into #Temp2 values('012', 'Logistik', 12 ,'1.9.2021')
+    insert into #Temp2 values('003', 'KLR', 5 ,'1.7.2021')
+    insert into #Temp2 values('011', 'KLR', 13 ,'1.8.2021')
+    insert into #Temp2 values('007', 'FiBu', 6 ,'1.10.2021')
+
+ 
+
+    select * from #Temp2
+
+ 
+
+
+--  3. Rufen Sie die Daten beider Tabellen zunächst im aktuellen Abfragefenster, danach in
+-- einem anderen Abfragefenster ab.
+        select * from ##Temp1   -- aktuelles Fenster OK
+        select * from #Temp2    -- aktuelles Fenster OK
+
+        select * from ##Temp1   -- anderes Fenster OK
+        select * from #Temp2    -- anderes Fenster Fehler 208
+                                -- Ebene 16, Ungültiger Objektname
+/* 3 neue Datensätze*/
+        insert into #Temp2 values('014', 'FiBu', 9,'10.7.2021')
+		insert into #Temp2 values('020', 'FiBu', 3,'8.8.2021')
+		insert into #Temp2 values('024', 'FiBu', 11,'1.9.2021') 
+-- 5. die in beiden Tabellen identischen Datensätze        
+        create view temp1_2 as  -- Fehler: für temporäre Tabellen nicht zulässig
+        select * from ##Temp1
+        intersect 
+        select * from #Temp2
+ 
+-- 6. neue Tabelle: alle Datensätze ohne Duplikate        
+        select distinct * into ##TempNeu from 
+		(select * from ##Temp1 
+		union 
+		select * from #Temp2) AS dummy
+		        
+        select * from ##TempNeu
+        
+-- 7. erste globale Tabelle löschen
+-- aus der lokalen sämtliche Datensätze entfernen
+        drop table ##Temp1
+        delete from  #Temp2
+        
+		select  * from ##Temp1 --Fehler, existiert nicht mehr
+		select  * from #Temp2
+
+
+-- 8. Für alle Nicht-KLR Projekte ein weiterer Mitarbeiter
+        update ##TempNeu set Mitarbeiterzahl = Mitarbeiterzahl + 1 
+		where Thema !='KLR'
+        select * from ##TempNeu
+-- 9. neue Spalte: Dauer in Tagen.
+        alter table ##TempNeu add [Dauer in Tagen] int
+		select * from ##TempNeu 
+
+-- 10. KLR-Projekte dauern 40 Tage, FiBu 75 Tage, Logistik 65 Tage.
+
+        update ##TempNeu set [Dauer in Tagen] = 40 where Thema ='KLR'
+        update ##TempNeu set [Dauer in Tagen] = 75 where Thema ='FiBu'
+        update ##TempNeu set [Dauer in Tagen] = 65 where Thema ='Logistik' 
+		select * from ##TempNeu 		
+
+-- 11. Die Starttermine werden ggf. auf den Monatsersten vorverlegt.        
+        update ##TempNeu set Start = 
+		DATEADD(DAY,(DATEPART(DAY,Start)-1)*(-1),Start)
+		select * from ##TempNeu           
+
+/* 12. Für die neue Spalte Budget gesamt gilt:
+KLR-Projekte 7000,- € zzgl. 900,- pro Tag
+FiBu-Projekte 1000,- € zzgl. 500,- € pro Tag
+Logistik-Projekte: 900,- € pro Tag
+*/
+        alter table ##TempNeu add Budget decimal(10,2)
+        update ##TempNeu set budget 
+		= 7000 + 900*[Dauer in Tagen] where thema='KLR'
+        update ##TempNeu set budget 
+		= 1000 + 500*[Dauer in Tagen] where thema='FiBu'
+        update ##TempNeu set budget 
+		= 900*[Dauer in Tagen]  where thema='Logistik'
+
+        select * from ##TempNeu
+
+-- 13. Folgende Abfragen werden benötigt:
+    -- a) Welche Projekte haben mehr als 11 Mitarbeiter?        
+            select * from ##TempNeu where Mitarbeiterzahl>11
+
+    -- b) Welches Projekt beginnt als Letztes?
+            select max(start) from ##TempNeu --1.12.2021
+
+    -- c) An wie vielen Projekten arbeiten mehr als 8 MA?
+            select count(*) from ##TempNeu where Mitarbeiterzahl > 8 --6 
+
+    -- d) Welche FiBu-Projekte haben weniger als 7 MA?
+            select * from ##TempNeu where Thema ='FiBu' and Mitarbeiterzahl < 7 
+
+    -- e) Wie viele Projekte beginnen in welchem Monat?            
+            select datename(MONTH, start), start, Thema from ##TempNeu order by MONTH(start) asc
+			
+			select min(start) AS Start, datename(MONTH, start) AS Monat, 
+			COUNT(*) AS [Anz. Projekte] 
+			FROM ##TempNeu 
+			GROUP BY datename(MONTH, start) ORDER BY MIN(start)
+    -- f) Wie heißt die ø Mitarbeiterzahl?
+	         SELECT AVG(Mitarbeiterzahl) AS [ø Mitarbeiter] FROM ##TempNeu
+            
+    -- g) Wie verteilen sich die Projekte prozentual auf KLR, FiBu und Logistik?            
+            select Thema, sum(Budget) AS Budgetsumme, format((sum(Budget) / (select sum(Budget) from ##TempNeu)),'#.###%') 
+			as [Thema Prozent] from ##TempNeu group by Thema  
+    
+    -- h) In welchem Monat starten die meisten Projekte?            
+            select datename(MONTH, start) AS Monat, count(*) 
+			AS [höchste Anzahl Projekte] from ##TempNeu 
+			group by datename(MONTH, start) order by count(*) desc
+			OFFSET 0 ROWS FETCH NEXT 1 ROW ONLY
+
+
+
